@@ -5,6 +5,8 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript",
     "airbnb",
     "airbnb-typescript",
     "eslint-config-prettier",
@@ -14,7 +16,7 @@ module.exports = {
   parserOptions: {
     project: "./tsconfig.json",
   },
-  plugins: ["react-refresh", "prettier", "@typescript-eslint", "unused-imports"],
+  plugins: ["react-refresh", "prettier", "@typescript-eslint", "unused-imports", "import"],
   rules: {
     "prettier/prettier": "error",
     "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
