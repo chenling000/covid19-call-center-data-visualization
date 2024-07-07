@@ -3,9 +3,8 @@ import { useCallback, useEffect, useState } from "react";
 const baseUrl = "https://api.data.metro.tokyo.lg.jp/v1/Covid19CallCenter";
 
 type QueryParameters = {
-  from: string;
-  till: string;
-  cursor?: string;
+  from: Date;
+  till: Date;
 };
 
 type RawDataItem = {
@@ -47,21 +46,20 @@ const transformData = (rawData: RawDataItem): DataItem => {
   };
 };
 
-const useFetchData = ({ from, till, cursor }: QueryParameters) => {
-  const [rawData, setRawData] = useState<RawDataItem[]>([]);
+const useFetchData = ({ from, till }: QueryParameters) => {
   const [data, setData] = useState<DataItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
   const fetchData = useCallback(
-    async (currentCursor?: string) => {
+    async (cursor = "") => {
       try {
         const res = await fetch(
-          `${baseUrl}?from=${from}&till=${till}&limit=1000${currentCursor ? `&cursor=${currentCursor}` : ""}`
+          `${baseUrl}?from=${from}&till=${till}&limit=1000${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`
         );
         const resData: ResponseBody = await res.json();
-
-        setRawData((prev) => [...prev, ...resData[0]]);
+        const transformedData = resData[0].map((d) => transformData(d));
+        setData((prev) => [...prev, ...transformedData]);
 
         if (resData[1].moreResults === "MORE_RESULTS_AFTER_LIMIT") {
           fetchData(resData[1].endCursor);
@@ -70,16 +68,15 @@ const useFetchData = ({ from, till, cursor }: QueryParameters) => {
         console.error(err);
         setIsError(true);
       } finally {
-        setData(rawData.map((d) => transformData(d)));
         setIsLoading(false);
       }
     },
-    [from, till, rawData]
+    [from, till]
   );
 
   useEffect(() => {
-    fetchData(cursor);
-  }, [fetchData, cursor, from, till]);
+    fetchData();
+  }, [fetchData]);
 
   return { data, isLoading, isError };
 };
