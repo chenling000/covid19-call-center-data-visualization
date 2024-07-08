@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { JaDayOfWeek } from "../types/date";
+
 const baseUrl = "https://api.data.metro.tokyo.lg.jp/v1/Covid19CallCenter";
 
 type QueryParameters = {
@@ -10,7 +12,7 @@ type QueryParameters = {
 type RawDataItem = {
   全国地方公共団体コード: string;
   都道府県名: string;
-  曜日: "月" | "火" | "水" | "木" | "金" | "土" | "日";
+  曜日: JaDayOfWeek;
   受付_年月日: string;
   相談件数: number;
 };
@@ -25,7 +27,7 @@ type ResponseBody = [
   },
 ];
 
-type DataItem = {
+export type DataItem = {
   organizationCode: RawDataItem["全国地方公共団体コード"];
   prefecture: RawDataItem["都道府県名"];
   day: number;
