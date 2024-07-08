@@ -13,8 +13,11 @@ export const defaultTheme = createTheme({
     drawer: 100,
   },
   appBar: {
-    background: "#ff6d14;",
+    background: "#ff6d14",
     text: "#ffffff",
+  },
+  drawer: {
+    activeColor: "#ffdcc7",
   },
 });
 

@@ -12,17 +12,17 @@ import {
   Drawer,
   List,
   ListItem,
-  ListItemButton,
   ListItemIcon,
   ListItemText,
   IconButton,
+  ListItemButton,
 } from "@mui/material";
 import { FC, ReactElement, ReactNode, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, Location } from "react-router-dom";
 
 import { ROUTE_PATH } from "../RoutePath";
 
-const drawerWidth = 180;
+const drawerWidth = 200;
 
 const styles = {
   appBar: (theme: Theme) => css`
@@ -45,16 +45,32 @@ const styles = {
   //     box-sizing: "border-box";
   //   }
   // `,
-  drawerBox: css`
-    overflow: auto;
-  `,
   drawerIcon: css`
     min-width: 0;
     margin-right: 1rem;
+    color: "#ffffff";
+  `,
+  drawerBox: css`
+    overflow: auto;
+    padding: 0 0.5rem;
+  `,
+  drawerListItem: (theme: Theme, path: string, location: Location) => css`
+    background-color: ${path === location.pathname ? theme.drawer.activeColor : "Background"};
+    border-radius: 0.5rem;
+  `,
+  drawerLink: (theme: Theme) => css`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: ${theme.palette.text.primary};
+    text-decoration-line: none;
   `,
   mainBox: css`
     flex-grow: 1;
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
   `,
 };
 
@@ -88,6 +104,7 @@ interface AppBarProps {
 
 const AppBar: FC<AppBarProps> = ({ children }) => {
   const [isDrawerExpand, setIsDrawerExpand] = useState<boolean>(true);
+  const location = useLocation();
 
   return (
     <Box css={styles.appBox}>
@@ -107,17 +124,26 @@ const AppBar: FC<AppBarProps> = ({ children }) => {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
+          [`& .MuiDrawer-paper`]: {
+            width: drawerWidth,
+            boxSizing: "border-box",
+          },
         }}
       >
         <Toolbar />
         <Box css={styles.drawerBox}>
           <List>
             {Object.values(drawerListItems).map(({ text, icon, path }) => (
-              <ListItem key={text} disablePadding component={Link} to={path}>
+              <ListItem
+                key={text}
+                disablePadding
+                css={(theme) => styles.drawerListItem(theme, path, location)}
+              >
                 <ListItemButton>
-                  <ListItemIcon css={styles.drawerIcon}>{icon}</ListItemIcon>
-                  <ListItemText primary={text} color="gray" />
+                  <Link to={path} css={styles.drawerLink}>
+                    <ListItemIcon css={styles.drawerIcon}>{icon}</ListItemIcon>
+                    <ListItemText primary={text} />
+                  </Link>
                 </ListItemButton>
               </ListItem>
             ))}

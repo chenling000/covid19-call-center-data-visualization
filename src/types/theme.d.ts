@@ -7,6 +7,9 @@ declare module "@mui/material/styles" {
       background: string;
       text: string;
     };
+    drawer: {
+      activeColor: string;
+    };
     basePaper: string;
   }
   // allow configuration using `createTheme`
@@ -14,6 +17,9 @@ declare module "@mui/material/styles" {
     appBar?: {
       background?: string;
       text?: string;
+    };
+    drawer?: {
+      activeColor?: string;
     };
     basePaper?: string;
   }
