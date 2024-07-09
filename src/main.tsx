@@ -5,18 +5,22 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { ja as jaLocal } from "date-fns/locale";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider as ReduxProvider } from "react-redux";
 
 import AppRouter from "./AppRouter";
+import { store } from "./store";
 import { defaultTheme } from "./theme/default";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <MUIThemeProvider theme={defaultTheme}>
-      <ThemeProvider theme={defaultTheme}>
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={jaLocal}>
-          <AppRouter />
-        </LocalizationProvider>
-      </ThemeProvider>
-    </MUIThemeProvider>
+    <ReduxProvider store={store}>
+      <MUIThemeProvider theme={defaultTheme}>
+        <ThemeProvider theme={defaultTheme}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={jaLocal}>
+            <AppRouter />
+          </LocalizationProvider>
+        </ThemeProvider>
+      </MUIThemeProvider>
+    </ReduxProvider>
   </React.StrictMode>
 );
