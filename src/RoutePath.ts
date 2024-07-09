@@ -1,5 +1,5 @@
 export const ROUTE_PATH = {
-  home: "/home",
+  home: "/",
   lineChart: "/lineChart",
   pieChart: "/pieChart",
 } as const;
