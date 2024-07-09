@@ -5,9 +5,10 @@ import { FC, useEffect, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../Hooks/reduxHooks";
 import useMedia from "../Hooks/useMedia";
-import { displayMode, setMode, Mode } from "../redux-modules/displayModeSlice";
+import { setMode } from "../redux-modules/displayModeSlice";
 import { defaultTheme } from "../theme/default";
 import { maxDate, minDate, yearList } from "../types/date";
+import { Mode, displayMode } from "../types/display-mode";
 
 const styles = {
   selectArea: (isWideScreen: boolean) => css`
