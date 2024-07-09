@@ -63,5 +63,15 @@ module.exports = {
     "unused-imports/no-unused-imports": "warn",
     "import/no-extraneous-dependencies": ["error", { devDependencies: true }],
     "react/no-unknown-property": ["error", { ignore: ["css"] }],
+    // redux
+    "no-restricted-imports": "off",
+    "@typescript-eslint/no-restricted-imports": [
+      "warn",
+      {
+        name: "react-redux",
+        importNames: ["useSelector", "useDispatch"],
+        message: "Use typed hooks `useAppDispatch` and `useAppSelector` instead.",
+      },
+    ],
   },
 };
