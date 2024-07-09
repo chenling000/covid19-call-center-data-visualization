@@ -3,10 +3,11 @@ import { FormControl, InputLabel, Select, MenuItem, Box, Typography } from "@mui
 import { DatePicker } from "@mui/x-date-pickers";
 import { FC, useEffect, useState } from "react";
 
+import { useAppDispatch, useAppSelector } from "../Hooks/reduxHooks";
 import useMedia from "../Hooks/useMedia";
+import { displayMode, setMode, Mode } from "../redux-modules/displayModeSlice";
 import { defaultTheme } from "../theme/default";
 import { maxDate, minDate, yearList } from "../types/date";
-import { Mode, modeKeys, mode } from "../types/display-mode";
 
 const styles = {
   selectArea: (isWideScreen: boolean) => css`
@@ -57,7 +58,9 @@ const YearPicker: FC<YearPickerProps> = ({ id, label, yearValue, setYearValue, i
       error={isError}
     >
       {yearList.map((year) => (
-        <MenuItem value={year}>{year}</MenuItem>
+        <MenuItem key={year} value={year}>
+          {year}
+        </MenuItem>
       ))}
     </Select>
   </FormControl>
@@ -95,7 +98,8 @@ const YearMonthPicker: FC<YearMonthPickerProps> = ({ label, dateValue, setDateVa
 
 const DateRangePicker: FC = () => {
   const { isWideScreen } = useMedia();
-  const [selectedMode, setSelectedMode] = useState<Mode>(modeKeys[0]);
+  const mode = useAppSelector((state) => state.displayMode.mode);
+  const dispatch = useAppDispatch();
   const [startDate, setStartDate] = useState<Date>(minDate);
   const [endDate, setEndDate] = useState<Date>(maxDate);
   const [startYear, setStartYear] = useState<number>(yearList[0]);
@@ -103,7 +107,7 @@ const DateRangePicker: FC = () => {
   const [isRangeError, setIsRangeError] = useState<boolean>(false);
 
   console.log({
-    selectedMode,
+    mode,
     startDate,
     endDate,
   });
@@ -133,19 +137,21 @@ const DateRangePicker: FC = () => {
             labelId="mode-select"
             id="mode-select"
             css={styles.modeSelect}
-            value={selectedMode}
+            value={mode}
             label="表示内容"
-            onChange={(e) => setSelectedMode(e.target.value as Mode)}
+            onChange={(e) => dispatch(setMode(e.target.value as Mode))}
           >
-            {Object.entries(mode).map(([key, value]) => (
-              <MenuItem value={key}>{value}</MenuItem>
+            {Object.entries(displayMode).map(([key, value]) => (
+              <MenuItem key={key} value={key}>
+                {value}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
       </Box>
       <Box css={styles.selectRangeArea}>
         <Box css={styles.selectRangeBox}>
-          {selectedMode === "YEAR" && (
+          {mode === "YEAR" && (
             <>
               <YearPicker
                 id="start-year"
@@ -163,7 +169,7 @@ const DateRangePicker: FC = () => {
               />
             </>
           )}
-          {(selectedMode === "YEAR_MONTH" || selectedMode === "YEAR_MONTH_DAY") && (
+          {(mode === "YEAR_MONTH" || mode === "YEAR_MONTH_DAY") && (
             <>
               <YearMonthPicker
                 label="開始年月"
