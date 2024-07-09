@@ -6,6 +6,7 @@ import { FC, useEffect, useState } from "react";
 import useMedia from "../Hooks/useMedia";
 import { defaultTheme } from "../theme/default";
 import { maxDate, minDate, yearList } from "../types/date";
+import { Mode, modeKeys, mode } from "../types/display-mode";
 
 const styles = {
   selectArea: (isWideScreen: boolean) => css`
@@ -36,15 +37,6 @@ const styles = {
     color: ${theme.palette.error.main};
   `,
 };
-
-const modeKeys = ["YEAR", "YEAR_MONTH", "YEAR_MONTH_DAY"] as const;
-type Mode = (typeof modeKeys)[number];
-
-const mode: Record<Mode, string> = {
-  YEAR: "年を指定して月毎",
-  YEAR_MONTH: "年月を指定して日毎",
-  YEAR_MONTH_DAY: "年月を指定して曜日毎",
-} as const;
 
 interface YearPickerProps {
   id: string;
