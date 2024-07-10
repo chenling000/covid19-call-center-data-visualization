@@ -18,7 +18,7 @@ import { useAppSelector } from "../Hooks/reduxHooks";
 import useFetchData, { DataItem } from "../Hooks/useFetchData";
 import useMedia from "../Hooks/useMedia";
 import { defaultTheme } from "../theme/default";
-import { jaDayOfWeekList } from "../types/date";
+import { jaDayOfWeekList, monthList, weekOfDayList } from "../types/date";
 import { Mode } from "../types/display-mode";
 
 const tickFontSize = {
@@ -56,37 +56,31 @@ const assertUnreachable = (value: never): never => {
 const getModeData = (data: DataItem[], mode: Mode): ModeDataItem[] => {
   switch (mode) {
     case "YEAR": {
-      const sum: Record<string, number> = {};
+      const monthSum = monthList.fill(0);
       data.forEach(({ month, count }) => {
-        const displayDate = `${month + 1}月`;
-        if (sum[displayDate] !== undefined) {
-          sum[displayDate] += count;
-        } else {
-          sum[displayDate] = count;
-        }
+        monthSum[month] += count;
       });
-      return Object.entries(sum).map(([displayDate, count]) => ({ displayDate, 相談件数: count }));
+      return monthSum.map((count, index) => ({ displayDate: `${index + 1}月`, 相談件数: count }));
     }
     case "YEAR_MONTH": {
-      return data.map(({ month, date, count }) => ({
-        displayDate: `${month + 1}/${date}`,
+      const { year, month } = data[1];
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const dateSum = Array(daysInMonth).fill(0);
+      data.forEach(({ date, count }) => {
+        dateSum[date - 1] += count;
+      });
+      return dateSum.map((count, index) => ({
+        displayDate: `${month + 1}/${index + 1}`,
         相談件数: count,
       }));
     }
     case "YEAR_MONTH_DAY": {
-      const sum: Record<number, number> = {};
+      const weekOfDaySum = weekOfDayList.fill(0);
       data.forEach(({ day, count }) => {
-        if (sum[day] !== undefined) {
-          sum[day] += count;
-        } else {
-          sum[day] = count;
-        }
+        weekOfDaySum[day] += count;
       });
-      const daySumArray = Object.entries(sum)
-        .map(([day, count]) => ({ day, count }))
-        .sort((a, b) => Number(a.day) - Number(b.day));
-      return daySumArray.map(({ day, count }) => ({
-        displayDate: `${jaDayOfWeekList[Number(day)]}曜日`,
+      return weekOfDaySum.map((count, index) => ({
+        displayDate: `${jaDayOfWeekList[index]}曜日`,
         相談件数: count,
       }));
     }
