@@ -16,15 +16,25 @@ import {
   ListItemText,
   IconButton,
   ListItemButton,
+  CircularProgress,
 } from "@mui/material";
-import { FC, ReactElement, ReactNode, useState } from "react";
+import { FC, ReactElement, ReactNode, useEffect, useState } from "react";
 import { Link, useLocation, Location } from "react-router-dom";
 
+import useMedia from "../Hooks/useMedia";
 import { ROUTE_PATH } from "../RoutePath";
 
-const drawerWidth = 200;
+const drawerWidth = {
+  wide: 200,
+  narrow: 70,
+};
 
 const styles = {
+  appBox: css`
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  `,
   appBar: (theme: Theme) => css`
     background: ${theme.appBar.background};
     color: ${theme.appBar.text};
@@ -34,17 +44,6 @@ const styles = {
     color: ${theme.appBar.text};
     margin-right: 1rem;
   `,
-  appBox: css`
-    display: flex;
-  `,
-  // drawer: css`
-  //   width: ${drawerWidth};
-  //   flex-shrink: 0;
-  //   & .MuiDrawer-paper {
-  //     width: ${drawerWidth};
-  //     box-sizing: "border-box";
-  //   }
-  // `,
   drawerIcon: css`
     min-width: 0;
     margin-right: 1rem;
@@ -68,9 +67,19 @@ const styles = {
   `,
   mainBox: css`
     flex-grow: 1;
-    padding: 1rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
+  `,
+  loadingBox: (theme: Theme) => css`
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: ${theme.zIndex.drawer - 1};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.2);
   `,
 };
 
@@ -99,36 +108,46 @@ const drawerListItems: { [K in keyof typeof ROUTE_PATH]: DrawerListItem<K> } = {
 };
 
 interface AppBarProps {
+  isLoading: boolean;
   children: ReactNode;
 }
 
-const AppBar: FC<AppBarProps> = ({ children }) => {
-  const [isDrawerExpand, setIsDrawerExpand] = useState<boolean>(true);
+const AppBar: FC<AppBarProps> = ({ isLoading, children }) => {
   const location = useLocation();
+  const { isWideScreen } = useMedia();
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(isWideScreen);
+
+  useEffect(() => {
+    setIsDrawerOpen(isWideScreen);
+  }, [isWideScreen]);
 
   return (
     <Box css={styles.appBox}>
       <CssBaseline />
       <MUIAppBar position="fixed" css={styles.appBar}>
         <Toolbar>
-          <IconButton onClick={() => setIsDrawerExpand(!isDrawerExpand)} css={styles.menuIcon}>
-            <MenuIcon />
-          </IconButton>
+          {!isWideScreen && (
+            <IconButton onClick={() => setIsDrawerOpen(!isDrawerOpen)} css={styles.menuIcon}>
+              <MenuIcon />
+            </IconButton>
+          )}
           <Typography variant="h6" noWrap component="div">
             新型コロナコールセンター相談件数
           </Typography>
         </Toolbar>
       </MUIAppBar>
       <Drawer
-        variant={isDrawerExpand ? "permanent" : "temporary"}
+        variant={isDrawerOpen ? "permanent" : "temporary"}
+        open={isDrawerOpen}
         sx={{
-          width: drawerWidth,
+          width: isWideScreen ? drawerWidth.wide : drawerWidth.narrow,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
+            width: isWideScreen ? drawerWidth.wide : drawerWidth.narrow,
             boxSizing: "border-box",
           },
         }}
+        PaperProps={{ elevation: 1 }}
       >
         <Toolbar />
         <Box css={styles.drawerBox}>
@@ -142,7 +161,7 @@ const AppBar: FC<AppBarProps> = ({ children }) => {
                 <ListItemButton>
                   <Link to={path} css={styles.drawerLink}>
                     <ListItemIcon css={styles.drawerIcon}>{icon}</ListItemIcon>
-                    <ListItemText primary={text} />
+                    {isWideScreen && <ListItemText primary={text} />}
                   </Link>
                 </ListItemButton>
               </ListItem>
@@ -150,6 +169,11 @@ const AppBar: FC<AppBarProps> = ({ children }) => {
           </List>
         </Box>
       </Drawer>
+      {isLoading && (
+        <Box css={styles.loadingBox}>
+          <CircularProgress />
+        </Box>
+      )}
       <Box component="main" css={styles.mainBox}>
         <Toolbar />
         {children}
