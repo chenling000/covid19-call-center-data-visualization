@@ -118,7 +118,7 @@ const renderActiveShape = (props: unknown) => {
         y={ey}
         textAnchor={textAnchor}
         fill="#333"
-      >{`相談件数 : ${value}`}</text>
+      >{`${value}件`}</text>
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
         {`(${(percent * 100).toFixed(2)}%)`}
       </text>
@@ -151,14 +151,14 @@ const PieChartPage: FC = () => {
               <Pie
                 data={modeData}
                 cx="50%"
-                cy={isWideScreen ? "50%" : "30%"}
-                activeIndex={activeIndex}
-                activeShape={renderActiveShape}
-                innerRadius="20%"
-                outerRadius="80%"
+                cy={isWideScreen ? "50%" : "40%"}
+                innerRadius={isWideScreen ? "20%" : "15%"}
+                outerRadius={isWideScreen ? "80%" : "60%"}
                 fill={defaultTheme.palette.primary.main}
                 dataKey={modeDataItemKey.相談件数}
                 onMouseEnter={onPieEnter}
+                activeIndex={activeIndex}
+                activeShape={renderActiveShape}
               >
                 {modeData.map(({ displayDate }, index) => (
                   <Cell
