@@ -163,7 +163,9 @@ const PieChartPage: FC = () => {
                 {modeData.map(({ displayDate }, index) => (
                   <Cell
                     key={`cell-${displayDate}`}
-                    fill={pieChartColors[index % pieChartColors.length]}
+                    fill={
+                      pieChartColors[Math.floor(pieChartColors.length / modeData.length) * index]
+                    }
                   />
                 ))}
               </Pie>
