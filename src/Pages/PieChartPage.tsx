@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { FC, useCallback, useMemo, useState } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Sector } from "recharts";
 
@@ -19,9 +19,6 @@ const styles = {
     padding: 1.5rem 0;
     display: flex;
     flex-direction: column;
-    > * + * {
-      margin-top: 0.5rem;
-    }
   `,
 };
 
@@ -145,6 +142,13 @@ const PieChartPage: FC = () => {
     <AppBar isLoading={isLoading}>
       <DatePicker />
       <Box css={styles.graphBox}>
+        <Typography
+          alignSelf="center"
+          color={defaultTheme.palette.text.secondary}
+          variant={isWideScreen ? "body1" : "body2"}
+        >
+          東京都新型コロナコールセンター相談件数
+        </Typography>
         {data.length > 0 && (
           <ResponsiveContainer width="100%" height="100%">
             <PieChart width={1000} height={1000}>
