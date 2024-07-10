@@ -4,11 +4,6 @@ import { JaDayOfWeek } from "../types/date";
 
 const baseUrl = "https://api.data.metro.tokyo.lg.jp/v1/Covid19CallCenter";
 
-type QueryParameters = {
-  from: Date;
-  till: Date;
-};
-
 type RawDataItem = {
   全国地方公共団体コード: string;
   都道府県名: string;
@@ -28,31 +23,37 @@ type ResponseBody = [
 ];
 
 export type DataItem = {
-  organizationCode: RawDataItem["全国地方公共団体コード"];
   prefecture: RawDataItem["都道府県名"];
-  day: number;
+  count: number;
   year: number;
   month: number; // January gives 0
-  date: number; // Sunday - Saturday : 0 - 6
+  date: number; // 1 - 31
+  day: number; // Sunday - Saturday : 0 - 6
 };
 
-const transformData = (rawData: RawDataItem): DataItem => {
-  const date = new Date(rawData["受付_年月日"]);
+const transformDataItem = (rawData: RawDataItem): DataItem => {
+  const receptionDate = new Date(rawData["受付_年月日"]);
   return {
-    organizationCode: rawData["全国地方公共団体コード"],
     prefecture: rawData["都道府県名"],
-    year: date.getFullYear(),
-    month: date.getMonth(),
-    date: date.getDate(),
-    day: date.getDay(),
+    count: rawData["相談件数"],
+    year: receptionDate.getFullYear(),
+    month: receptionDate.getMonth(),
+    date: receptionDate.getDate(),
+    day: receptionDate.getDay(),
   };
 };
 
-const useFetchData = ({ from, till }: QueryParameters) => {
+type FetchDataParameters = {
+  from: Date;
+  till: Date;
+};
+
+const useFetchData = ({ from, till }: FetchDataParameters) => {
   const [data, setData] = useState<DataItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
+  const rawData: RawDataItem[] = [];
   const fetchData = useCallback(
     async (cursor = "") => {
       try {
@@ -60,8 +61,7 @@ const useFetchData = ({ from, till }: QueryParameters) => {
           `${baseUrl}?from=${from}&till=${till}&limit=1000${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`
         );
         const resData: ResponseBody = await res.json();
-        const transformedData = resData[0].map((d) => transformData(d));
-        setData((prev) => [...prev, ...transformedData]);
+        rawData.push(...resData[0]);
 
         if (resData[1].moreResults === "MORE_RESULTS_AFTER_LIMIT") {
           fetchData(resData[1].endCursor);
@@ -70,9 +70,11 @@ const useFetchData = ({ from, till }: QueryParameters) => {
         console.error(err);
         setIsError(true);
       } finally {
+        setData(rawData.map((d) => transformDataItem(d)));
         setIsLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [from, till]
   );
 
