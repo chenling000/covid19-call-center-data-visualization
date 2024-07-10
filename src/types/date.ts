@@ -1,6 +1,3 @@
-export const minDate = new Date("2020-01-01T00:00:00.000Z");
-export const maxDate = new Date("2022-12-31T00:00:00.000Z");
-
 export const yearList = [2020, 2021, 2022];
 
 export const monthList = Array(12)

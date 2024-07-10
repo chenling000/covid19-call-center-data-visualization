@@ -1,9 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { maxDate, minDate } from "../types/date";
-
 import type { RootState } from "../store";
+
+export const minDate = new Date("2020-01-01T00:00:00.000Z");
+export const maxDate = new Date("2022-12-31T00:00:00.000Z");
 
 interface DatePickerState {
   startDate: Date;
@@ -11,8 +12,8 @@ interface DatePickerState {
 }
 
 const initialState: DatePickerState = {
-  startDate: minDate,
-  endDate: maxDate,
+  startDate: new Date(maxDate.getFullYear(), 0, 1),
+  endDate: new Date(maxDate.getFullYear(), 11, 31),
 };
 
 export const datePickerSlice = createSlice({

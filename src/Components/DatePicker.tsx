@@ -5,9 +5,9 @@ import { FC, useEffect, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../Hooks/reduxHooks";
 import useMedia from "../Hooks/useMedia";
-import { setEndDate, setStartDate } from "../redux-modules/datePickerSlice";
+import { setEndDate, setStartDate, maxDate, minDate } from "../redux-modules/datePickerSlice";
 import { setMode } from "../redux-modules/displayModeSlice";
-import { maxDate, minDate, yearList } from "../types/date";
+import { yearList } from "../types/date";
 import { Mode, displayMode } from "../types/display-mode";
 
 const styles = {
