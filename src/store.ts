@@ -1,11 +1,11 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 
-import { dateRangePickerReducer, dateRangePickerSlice } from "./redux-modules/dateRangePickerSlice";
+import { datePickerReducer, datePickerSlice } from "./redux-modules/datePickerSlice";
 import { displayModeReducer, displayModeSlice } from "./redux-modules/displayModeSlice";
 
 const rootReducer = combineReducers({
   [displayModeSlice.name]: displayModeReducer,
-  [dateRangePickerSlice.name]: dateRangePickerReducer,
+  [datePickerSlice.name]: datePickerReducer,
 });
 
 export const store = configureStore({
@@ -13,7 +13,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredPaths: ["dateRangePicker.startDate", "dateRangePicker.endDate"],
+        ignoredPaths: ["datePicker.startDate", "datePicker.endDate"],
         ignoredActionPaths: ["payload"],
       },
     }),
