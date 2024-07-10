@@ -27,10 +27,7 @@ const styles = {
   `,
 };
 
-interface YearPickerProps {
-  startDate: Date;
-}
-const YearPicker: FC<YearPickerProps> = ({ startDate }) => {
+const YearPicker = ({ startDate }: { startDate: Date }) => {
   const [yearValue, setYearValue] = useState<number>(startDate.getFullYear());
   const dispatch = useAppDispatch();
 
@@ -59,10 +56,7 @@ const YearPicker: FC<YearPickerProps> = ({ startDate }) => {
   );
 };
 
-interface YearMonthPickerProps {
-  startDate: Date;
-}
-const YearMonthPicker: FC<YearMonthPickerProps> = ({ startDate }) => {
+const YearMonthPicker = ({ startDate }: { startDate: Date }) => {
   const [dateValue, setDateValue] = useState<Date>(startDate);
   const dispatch = useAppDispatch();
 
