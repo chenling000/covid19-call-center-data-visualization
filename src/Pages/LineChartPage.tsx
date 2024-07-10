@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { Box, Typography } from "@mui/material";
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -13,54 +13,18 @@ import {
 } from "recharts";
 
 import AppBar from "../Components/AppBar";
-import DateRangePicker from "../Components/DateRangePicker";
+import DatePicker from "../Components/DatePicker";
+import { useAppSelector } from "../Hooks/reduxHooks";
+import useFetchData, { DataItem } from "../Hooks/useFetchData";
 import useMedia from "../Hooks/useMedia";
 import { defaultTheme } from "../theme/default";
+import { jaDayOfWeekList } from "../types/date";
+import { Mode } from "../types/display-mode";
 
-const dummyData = [
-  {
-    name: "Page A",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "Page B",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "Page C",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "Page D",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "Page E",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "Page F",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "Page G",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
+const tickFontSize = {
+  big: 15,
+  small: 12,
+};
 
 const styles = {
   graphBox: css`
@@ -75,16 +39,74 @@ const styles = {
   `,
 };
 
-interface LineChartPageProps {
-  isWideScreen: boolean;
+const modeDataItemKey = {
+  displayDate: "displayDate",
+  相談件数: "相談件数",
+} as const;
+
+interface ModeDataItem extends Record<keyof typeof modeDataItemKey, unknown> {
+  displayDate: string;
+  相談件数: number;
 }
 
-const LineChartPage: FC<LineChartPageProps> = () => {
+const assertUnreachable = (value: never): never => {
+  throw new Error(`Unexpected value: ${value}`);
+};
+
+const getModeData = (data: DataItem[], mode: Mode): ModeDataItem[] => {
+  switch (mode) {
+    case "YEAR": {
+      const sum: Record<string, number> = {};
+      data.forEach(({ month, count }) => {
+        const displayDate = `${month + 1}月`;
+        if (sum[displayDate] !== undefined) {
+          sum[displayDate] += count;
+        } else {
+          sum[displayDate] = count;
+        }
+      });
+      return Object.entries(sum).map(([displayDate, count]) => ({ displayDate, 相談件数: count }));
+    }
+    case "YEAR_MONTH": {
+      return data.map(({ month, date, count }) => ({
+        displayDate: `${month + 1}/${date}`,
+        相談件数: count,
+      }));
+    }
+    case "YEAR_MONTH_DAY": {
+      const sum: Record<number, number> = {};
+      data.forEach(({ day, count }) => {
+        if (sum[day] !== undefined) {
+          sum[day] += count;
+        } else {
+          sum[day] = count;
+        }
+      });
+      const daySumArray = Object.entries(sum)
+        .map(([day, count]) => ({ day, count }))
+        .sort((a, b) => Number(a.day) - Number(b.day));
+      return daySumArray.map(({ day, count }) => ({
+        displayDate: `${jaDayOfWeekList[Number(day)]}曜日`,
+        相談件数: count,
+      }));
+    }
+    default:
+      return assertUnreachable(mode);
+  }
+};
+
+const LineChartPage: FC = () => {
   const { isWideScreen } = useMedia();
+  const mode = useAppSelector((state) => state.displayMode.mode);
+  const { startDate, endDate } = useAppSelector((state) => state.datePicker);
+  const { data } = useFetchData({ from: startDate, till: endDate });
+  const modeData = useMemo(() => getModeData(data, mode), [data, mode]);
+
+  console.log(data);
 
   return (
     <AppBar>
-      <DateRangePicker />
+      <DatePicker />
       <Box css={styles.graphBox}>
         <Typography
           alignSelf="center"
@@ -100,21 +122,37 @@ const LineChartPage: FC<LineChartPageProps> = () => {
           <LineChart
             width={1000}
             height={500}
-            data={dummyData}
+            data={modeData}
             margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
+              left: 10,
+              right: 10,
             }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
+            <CartesianGrid strokeDasharray="2 2" />
+            <XAxis
+              dataKey={modeDataItemKey.displayDate}
+              interval={0}
+              angle={-30}
+              dx={-15}
+              dy={10}
+              tick={{
+                fontSize: isWideScreen ? tickFontSize.big : tickFontSize.small,
+              }}
+            />
+            <YAxis
+              dataKey={modeDataItemKey.相談件数}
+              tick={{
+                fontSize: isWideScreen ? tickFontSize.big : tickFontSize.small,
+              }}
+            />
             <Tooltip />
             <Legend />
-            <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-            <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+            <Line
+              type="monotone"
+              dataKey={modeDataItemKey.相談件数}
+              stroke="#8884d8"
+              activeDot={{ r: 8 }}
+            />
           </LineChart>
         </ResponsiveContainer>
       </Box>
