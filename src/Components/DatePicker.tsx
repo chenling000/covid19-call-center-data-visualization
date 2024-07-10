@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { FormControl, InputLabel, Select, MenuItem, Box } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker as MUIDatePicker } from "@mui/x-date-pickers";
 import { FC, useEffect, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../Hooks/reduxHooks";
@@ -72,7 +72,7 @@ const YearMonthPicker: FC<YearMonthPickerProps> = ({ startDate }) => {
   }, [dateValue, dispatch]);
 
   return (
-    <DatePicker
+    <MUIDatePicker
       minDate={minDate}
       maxDate={maxDate}
       label="年/月"
@@ -85,7 +85,7 @@ const YearMonthPicker: FC<YearMonthPickerProps> = ({ startDate }) => {
   );
 };
 
-const DateRangePicker: FC = () => {
+const DatePicker: FC = () => {
   const { isWideScreen } = useMedia();
   const mode = useAppSelector((state) => state.displayMode.mode);
   const { startDate } = useAppSelector((state) => state.datePicker);
@@ -122,4 +122,4 @@ const DateRangePicker: FC = () => {
   );
 };
 
-export default DateRangePicker;
+export default DatePicker;
