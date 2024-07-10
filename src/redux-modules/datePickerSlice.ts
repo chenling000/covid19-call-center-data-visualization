@@ -5,18 +5,18 @@ import { maxDate, minDate } from "../types/date";
 
 import type { RootState } from "../store";
 
-interface DateRangePickerState {
+interface DatePickerState {
   startDate: Date;
   endDate: Date;
 }
 
-const initialState: DateRangePickerState = {
+const initialState: DatePickerState = {
   startDate: minDate,
   endDate: maxDate,
 };
 
-export const dateRangePickerSlice = createSlice({
-  name: "dateRangePicker",
+export const datePickerSlice = createSlice({
+  name: "datePicker",
   initialState,
   reducers: {
     setStartDate: (state, action: PayloadAction<Date>) => {
@@ -28,8 +28,8 @@ export const dateRangePickerSlice = createSlice({
   },
 });
 
-export const { setStartDate, setEndDate } = dateRangePickerSlice.actions;
+export const { setStartDate, setEndDate } = datePickerSlice.actions;
 
-export const selectDateRangePicker = (state: RootState) => state.dateRangePicker;
+export const selectDatePicker = (state: RootState) => state.datePicker;
 
-export const dateRangePickerReducer = dateRangePickerSlice.reducer;
+export const datePickerReducer = datePickerSlice.reducer;
