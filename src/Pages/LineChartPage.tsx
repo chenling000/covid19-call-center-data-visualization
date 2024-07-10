@@ -140,7 +140,7 @@ const LineChartPage: FC = () => {
               }}
             />
             <Tooltip />
-            <Legend />
+            <Legend wrapperStyle={{ paddingTop: "1rem" }} />
             <Line
               type="monotone"
               dataKey={modeDataItemKey.相談件数}
