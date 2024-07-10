@@ -15,11 +15,10 @@ import {
 import AppBar from "../Components/AppBar";
 import DatePicker from "../Components/DatePicker";
 import { useAppSelector } from "../Hooks/reduxHooks";
-import useFetchData, { DataItem } from "../Hooks/useFetchData";
+import useFetchData from "../Hooks/useFetchData";
 import useMedia from "../Hooks/useMedia";
 import { defaultTheme } from "../theme/default";
-import { jaDayOfWeekList, monthList, weekOfDayList } from "../types/date";
-import { Mode } from "../types/display-mode";
+import { getModeData, modeDataItemKey } from "../utils/getModeData";
 
 const tickFontSize = {
   big: 15,
@@ -37,56 +36,6 @@ const styles = {
       margin-top: 0.5rem;
     }
   `,
-};
-
-const modeDataItemKey = {
-  displayDate: "displayDate",
-  相談件数: "相談件数",
-} as const;
-
-interface ModeDataItem extends Record<keyof typeof modeDataItemKey, unknown> {
-  displayDate: string;
-  相談件数: number;
-}
-
-const assertUnreachable = (value: never): never => {
-  throw new Error(`Unexpected value: ${value}`);
-};
-
-const getModeData = (data: DataItem[], mode: Mode): ModeDataItem[] => {
-  switch (mode) {
-    case "YEAR": {
-      const monthSum = monthList.fill(0);
-      data.forEach(({ month, count }) => {
-        monthSum[month] += count;
-      });
-      return monthSum.map((count, index) => ({ displayDate: `${index + 1}月`, 相談件数: count }));
-    }
-    case "YEAR_MONTH": {
-      const { year, month } = data[1];
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const dateSum = Array(daysInMonth).fill(0);
-      data.forEach(({ date, count }) => {
-        dateSum[date - 1] += count;
-      });
-      return dateSum.map((count, index) => ({
-        displayDate: `${month + 1}/${index + 1}`,
-        相談件数: count,
-      }));
-    }
-    case "YEAR_MONTH_DAY": {
-      const weekOfDaySum = weekOfDayList.fill(0);
-      data.forEach(({ day, count }) => {
-        weekOfDaySum[day] += count;
-      });
-      return weekOfDaySum.map((count, index) => ({
-        displayDate: `${jaDayOfWeekList[index]}曜日`,
-        相談件数: count,
-      }));
-    }
-    default:
-      return assertUnreachable(mode);
-  }
 };
 
 const LineChartPage: FC = () => {
