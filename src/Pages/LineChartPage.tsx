@@ -144,7 +144,7 @@ const LineChartPage: FC = () => {
             <Line
               type="monotone"
               dataKey={modeDataItemKey.相談件数}
-              stroke="#8884d8"
+              stroke={defaultTheme.palette.primary.main}
               activeDot={{ r: 8 }}
             />
           </LineChart>
