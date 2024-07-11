@@ -39,7 +39,6 @@ const styles = {
   `,
   menuIcon: (theme: Theme) => css`
     color: ${theme.appBar.text};
-    margin-right: 1rem;
   `,
   drawerIcon: css`
     min-width: 0;
