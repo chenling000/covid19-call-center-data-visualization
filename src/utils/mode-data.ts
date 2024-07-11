@@ -1,4 +1,4 @@
-import { DataItem } from "../Hooks/useFetchData";
+import { DataItem } from "../types/api";
 import { monthList, weekOfDayList, jaDayOfWeekList } from "../types/date";
 import { Mode } from "../types/display-mode";
 
