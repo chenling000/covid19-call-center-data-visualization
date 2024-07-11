@@ -4,7 +4,6 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import {
   Box,
   css,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -12,7 +11,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -28,12 +26,13 @@ import {
 import { FC, useMemo } from "react";
 
 import { useAppDispatch, useAppSelector } from "../Hooks/reduxHooks";
-import { DataItem } from "../Hooks/useFetchData";
 import { maxDate, minDate, setEndDate, setStartDate } from "../redux-modules/datePickerSlice";
 import { defaultTheme } from "../theme/default";
+import { DataItem } from "../types/api";
 import { jaDayOfWeekList } from "../types/date";
 
 import { YearMonthPicker } from "./DatePicker";
+import TooltipIconButton from "./TooltipIconButton";
 
 const styles = {
   calendarBox: (isWideScreen: boolean) => css`
@@ -80,7 +79,6 @@ const getCalendarArray = (date: Date, data: DataItem[]) => {
   const calendarArray: { date: Date; count?: number }[][] = sundays.map((sunday) =>
     eachDayOfInterval({ start: sunday, end: endOfWeek(sunday) }).map((d) => ({ date: d }))
   );
-
   if (data.length < 1) return calendarArray;
 
   const targetMonth = getMonth(date);
@@ -96,7 +94,6 @@ const getCalendarArray = (date: Date, data: DataItem[]) => {
       }
     }
   }
-
   return calendarArray;
 };
 
@@ -133,24 +130,18 @@ const Calendar: FC<CalendarProps> = ({ isWideScreen, data }) => {
       <Box css={styles.calendarButtonBox}>
         <YearMonthPicker startDate={targetDate} />
         <Box>
-          <Tooltip title="前の月へ">
-            <IconButton
-              size="large"
-              onClick={() => setDisplayedMonth("BACK")}
-              disabled={targetDate < minDate}
-            >
-              <NavigateBeforeIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="次の月へ">
-            <IconButton
-              size="large"
-              onClick={() => setDisplayedMonth("NEXT")}
-              disabled={targetDate > new Date(maxDate.getFullYear(), maxDate.getMonth() - 1)}
-            >
-              <NavigateNextIcon />
-            </IconButton>
-          </Tooltip>
+          <TooltipIconButton
+            tooltipText="前の月へ"
+            onClick={() => setDisplayedMonth("BACK")}
+            disabled={targetDate < minDate}
+            icon={<NavigateBeforeIcon />}
+          />
+          <TooltipIconButton
+            tooltipText="次の月へ"
+            onClick={() => setDisplayedMonth("NEXT")}
+            disabled={targetDate > new Date(maxDate.getFullYear(), maxDate.getMonth() - 1)}
+            icon={<NavigateNextIcon />}
+          />
         </Box>
       </Box>
       <Box>
