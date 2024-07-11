@@ -1,10 +1,11 @@
 import { css } from "@emotion/react";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { FC, useCallback, useMemo, useState } from "react";
 import { ResponsiveContainer, PieChart, Pie, Cell, Sector } from "recharts";
 
 import AppBar from "../Components/AppBar";
 import DatePicker from "../Components/DatePicker";
+import GraphTitle from "../Components/GraphTitle";
 import { useAppSelector } from "../Hooks/reduxHooks";
 import useFetchData from "../Hooks/useFetchData";
 import useMedia from "../Hooks/useMedia";
@@ -141,13 +142,7 @@ const PieChartPage: FC = () => {
     <AppBar isLoading={isLoading} isError={isError} error={error}>
       <DatePicker />
       <Box css={styles.graphBox}>
-        <Typography
-          alignSelf="center"
-          color={defaultTheme.palette.text.secondary}
-          variant={isWideScreen ? "body1" : "body2"}
-        >
-          東京都新型コロナコールセンター相談件数
-        </Typography>
+        <GraphTitle isWideScreen={isWideScreen} />
         {data.length > 0 && (
           <ResponsiveContainer width="100%" height="100%">
             <PieChart width={1000} height={1000}>

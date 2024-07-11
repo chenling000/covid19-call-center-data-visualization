@@ -30,6 +30,7 @@ import { defaultTheme } from "../theme/default";
 import { DataItem } from "../types/api";
 import { jaDayOfWeekList } from "../types/date";
 
+import GraphTitle from "./GraphTitle";
 import TooltipIconButton from "./TooltipIconButton";
 import YearMonthPicker from "./YearMonthPicker";
 
@@ -144,13 +145,7 @@ const Calendar: FC<CalendarProps> = ({ isWideScreen, data }) => {
         </Box>
       </Box>
       <Box>
-        <Typography
-          align="center"
-          color={defaultTheme.palette.text.secondary}
-          variant={isWideScreen ? "body1" : "body2"}
-        >
-          東京都新型コロナコールセンター相談件数
-        </Typography>
+        <GraphTitle isWideScreen={isWideScreen} />
       </Box>
       <TableContainer>
         <Table
