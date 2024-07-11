@@ -12,6 +12,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -132,20 +133,24 @@ const Calendar: FC<CalendarProps> = ({ isWideScreen, data }) => {
       <Box css={styles.calendarButtonBox}>
         <YearMonthPicker startDate={targetDate} />
         <Box>
-          <IconButton
-            size="large"
-            onClick={() => setDisplayedMonth("BACK")}
-            disabled={targetDate < minDate}
-          >
-            <NavigateBeforeIcon />
-          </IconButton>
-          <IconButton
-            size="large"
-            onClick={() => setDisplayedMonth("NEXT")}
-            disabled={targetDate > new Date(maxDate.getFullYear(), maxDate.getMonth() - 1)}
-          >
-            <NavigateNextIcon />
-          </IconButton>
+          <Tooltip title="前の月へ">
+            <IconButton
+              size="large"
+              onClick={() => setDisplayedMonth("BACK")}
+              disabled={targetDate < minDate}
+            >
+              <NavigateBeforeIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="次の月へ">
+            <IconButton
+              size="large"
+              onClick={() => setDisplayedMonth("NEXT")}
+              disabled={targetDate > new Date(maxDate.getFullYear(), maxDate.getMonth() - 1)}
+            >
+              <NavigateNextIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
       <Box>
