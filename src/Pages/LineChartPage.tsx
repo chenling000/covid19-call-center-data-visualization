@@ -42,11 +42,11 @@ const LineChartPage: FC = () => {
   const { isWideScreen } = useMedia();
   const mode = useAppSelector((state) => state.displayMode.mode);
   const { startDate, endDate } = useAppSelector((state) => state.datePicker);
-  const { data, isLoading } = useFetchData({ from: startDate, till: endDate });
+  const { data, isLoading, isError, error } = useFetchData({ from: startDate, till: endDate });
   const modeData = useMemo(() => (data.length > 0 ? getModeData(data, mode) : []), [data, mode]);
 
   return (
-    <AppBar isLoading={isLoading}>
+    <AppBar isLoading={isLoading} isError={isError} error={error}>
       <DatePicker />
       <Box css={styles.graphBox}>
         <Typography

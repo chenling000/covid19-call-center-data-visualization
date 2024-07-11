@@ -17,6 +17,8 @@ import {
   IconButton,
   ListItemButton,
   CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { FC, ReactElement, ReactNode, useEffect, useState } from "react";
 import { Link, useLocation, Location } from "react-router-dom";
@@ -113,17 +115,33 @@ const drawerListItems: { [K in keyof typeof ROUTE_PATH]: DrawerListItem<K> } = {
 
 interface AppBarProps {
   isLoading: boolean;
+  isError: boolean;
+  error: unknown;
   children: ReactNode;
 }
 
-const AppBar: FC<AppBarProps> = ({ children, isLoading }) => {
+const AppBar: FC<AppBarProps> = ({ children, isLoading, isError, error }) => {
   const location = useLocation();
   const { isWideScreen } = useMedia();
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(isWideScreen);
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
+
+  const handleCloseAlert = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setIsAlertOpen(false);
+  };
 
   useEffect(() => {
     setIsDrawerOpen(isWideScreen);
   }, [isWideScreen]);
+
+  useEffect(() => {
+    if (isError) {
+      setIsAlertOpen(true);
+    }
+  }, [isError]);
 
   return (
     <Box css={styles.appBox}>
@@ -135,7 +153,7 @@ const AppBar: FC<AppBarProps> = ({ children, isLoading }) => {
               <MenuIcon />
             </IconButton>
           )}
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" onClick={() => setIsAlertOpen(true)}>
             新型コロナコールセンター相談件数
           </Typography>
         </Toolbar>
@@ -184,6 +202,11 @@ const AppBar: FC<AppBarProps> = ({ children, isLoading }) => {
         <Toolbar />
         {children}
       </Box>
+      <Snackbar open={isAlertOpen} autoHideDuration={10000} onClose={handleCloseAlert}>
+        <Alert severity="error" variant="filled" onClose={handleCloseAlert}>
+          {`${error}`}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

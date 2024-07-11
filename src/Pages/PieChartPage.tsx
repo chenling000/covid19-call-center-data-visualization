@@ -11,6 +11,7 @@ import useMedia from "../Hooks/useMedia";
 import { defaultTheme } from "../theme/default";
 import pieChartColors from "../theme/pie-chart-color";
 import { getModeData, ModeDataItem, modeDataItemKey } from "../utils/mode-data";
+import { isPropertyAccessible } from "../utils/type-guards";
 
 const styles = {
   graphBox: css`
@@ -35,8 +36,6 @@ type ActiveShapeProps = {
   percent: number;
   value: number;
 };
-
-const isPropertyAccessible = (value: unknown): value is { [key: string]: unknown } => value != null;
 
 const isActiveShapeProps = (props: unknown): props is ActiveShapeProps => {
   if (!isPropertyAccessible(props)) return false;
@@ -127,7 +126,7 @@ const PieChartPage: FC = () => {
   const { isWideScreen } = useMedia();
   const mode = useAppSelector((state) => state.displayMode.mode);
   const { startDate, endDate } = useAppSelector((state) => state.datePicker);
-  const { data, isLoading } = useFetchData({ from: startDate, till: endDate });
+  const { data, isLoading, isError, error } = useFetchData({ from: startDate, till: endDate });
   const modeData = useMemo(() => (data.length > 0 ? getModeData(data, mode) : []), [data, mode]);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -139,7 +138,7 @@ const PieChartPage: FC = () => {
   );
 
   return (
-    <AppBar isLoading={isLoading}>
+    <AppBar isLoading={isLoading} isError={isError} error={error}>
       <DatePicker />
       <Box css={styles.graphBox}>
         <Typography

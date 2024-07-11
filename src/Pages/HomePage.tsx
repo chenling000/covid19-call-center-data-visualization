@@ -9,10 +9,10 @@ import useMedia from "../Hooks/useMedia";
 const HomePage: FC = () => {
   const { isWideScreen } = useMedia();
   const { startDate, endDate } = useAppSelector((state) => state.datePicker);
-  const { data, isLoading } = useFetchData({ from: startDate, till: endDate });
+  const { data, isLoading, isError, error } = useFetchData({ from: startDate, till: endDate });
 
   return (
-    <AppBar isLoading={isLoading}>
+    <AppBar isLoading={isLoading} isError={isError} error={error}>
       <Calendar isWideScreen={isWideScreen} data={data} />
     </AppBar>
   );
