@@ -43,6 +43,7 @@ const useFetchData = ({ from, till }: { from: Date; till: Date }) => {
           fetchData(response[1].endCursor);
         }
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error("error", err);
         setError(err);
         setIsError(true);
