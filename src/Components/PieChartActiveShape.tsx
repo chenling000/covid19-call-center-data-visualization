@@ -36,11 +36,10 @@ const isActiveShapeProps = (props: unknown): props is ActiveShapeProps => {
   );
 };
 
-const RADIAN = Math.PI / 180;
-
 const renderActiveShape = (props: unknown) => {
   // eslint-disable-next-line react/jsx-no-useless-fragment
   if (!isActiveShapeProps(props)) return <></>;
+  const RADIAN = Math.PI / 180;
   const {
     cx,
     cy,
