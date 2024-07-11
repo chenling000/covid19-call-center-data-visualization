@@ -1,7 +1,6 @@
 {
-  "name": "vite-template",
+  "name": "covid19-call-center-data-visualization",
   "private": true,
-  "description": "A modern minimal Vite 5 + React 18 + TypeScript template with pre-configured ESLint (with Airbnb JS/React rules), Prettier",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -48,5 +47,6 @@
     "typescript": "^5.2.2",
     "vite": "^5.0.0",
     "vite-plugin-eslint": "^1.8.1"
-  }
+  },
+  "homepage": "/"
 }
