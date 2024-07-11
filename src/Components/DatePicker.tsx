@@ -1,14 +1,15 @@
 import { css } from "@emotion/react";
 import { FormControl, InputLabel, Select, MenuItem, Box } from "@mui/material";
-import { DatePicker as MUIDatePicker } from "@mui/x-date-pickers";
 import { FC, useEffect, useState } from "react";
 
 import { useAppDispatch, useAppSelector } from "../Hooks/reduxHooks";
 import useMedia from "../Hooks/useMedia";
-import { setEndDate, setStartDate, maxDate, minDate } from "../redux-modules/datePickerSlice";
+import { setEndDate, setStartDate } from "../redux-modules/datePickerSlice";
 import { setMode } from "../redux-modules/displayModeSlice";
 import { yearList } from "../types/date";
 import { Mode, displayMode } from "../types/display-mode";
+
+import YearMonthPicker from "./YearMonthPicker";
 
 const styles = {
   selectArea: (isWideScreen: boolean) => css`
@@ -21,9 +22,6 @@ const styles = {
   `,
   modeSelect: css`
     width: 13rem;
-  `,
-  yearMonthSelect: css`
-    width: 8rem;
   `,
 };
 
@@ -56,29 +54,7 @@ const YearPicker = ({ startDate }: { startDate: Date }) => {
   );
 };
 
-export const YearMonthPicker = ({ startDate }: { startDate: Date }) => {
-  const dispatch = useAppDispatch();
-
-  const setDateValue = (date: Date) => {
-    dispatch(setStartDate(new Date(date.getFullYear(), date.getMonth(), 1)));
-    dispatch(setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 0)));
-  };
-
-  return (
-    <MUIDatePicker
-      minDate={minDate}
-      maxDate={maxDate}
-      label="年/月"
-      views={["year", "month"]}
-      format="yyyy/MM"
-      css={styles.yearMonthSelect}
-      value={startDate}
-      onAccept={(d) => d && setDateValue(d)}
-    />
-  );
-};
-
-const DatePicker: FC = () => {
+export const DatePicker: FC = () => {
   const { isWideScreen } = useMedia();
   const mode = useAppSelector((state) => state.displayMode.mode);
   const { startDate } = useAppSelector((state) => state.datePicker);

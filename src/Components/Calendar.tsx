@@ -31,8 +31,8 @@ import { defaultTheme } from "../theme/default";
 import { DataItem } from "../types/api";
 import { jaDayOfWeekList } from "../types/date";
 
-import { YearMonthPicker } from "./DatePicker";
 import TooltipIconButton from "./TooltipIconButton";
+import YearMonthPicker from "./YearMonthPicker";
 
 const styles = {
   calendarBox: (isWideScreen: boolean) => css`
