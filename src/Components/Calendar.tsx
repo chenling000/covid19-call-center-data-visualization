@@ -27,6 +27,7 @@ import {
 import { FC, useMemo } from "react";
 
 import { useAppDispatch, useAppSelector } from "../Hooks/reduxHooks";
+import { DataItem } from "../Hooks/useFetchData";
 import { maxDate, minDate, setEndDate, setStartDate } from "../redux-modules/datePickerSlice";
 import { defaultTheme } from "../theme/default";
 import { jaDayOfWeekList } from "../types/date";
@@ -58,7 +59,7 @@ const styles = {
     background-color: ${theme.palette.grey[200]};
   `,
   dateBox: (theme: Theme) => css`
-    height: 5rem;
+    height: 4.5rem;
     border: 1px solid ${theme.palette.grey[500]};
   `,
 };
@@ -66,32 +67,48 @@ const styles = {
 const getDateColor = (date: Date, displayedMonth: number) => {
   if (getMonth(date) !== displayedMonth) return defaultTheme.palette.grey[200];
   if (getDay(date) === 0) return defaultTheme.palette.primary.main;
-  return undefined;
+  return defaultTheme.palette.text.secondary;
 };
 
-const getCalendarArray = (date: Date) => {
+const getCalendarArray = (date: Date, data: DataItem[]) => {
   const sundays = eachWeekOfInterval({
     start: startOfMonth(date),
     end: endOfMonth(date),
   });
-  return sundays.map((sunday) => eachDayOfInterval({ start: sunday, end: endOfWeek(sunday) }));
+
+  const calendarArray: { date: Date; count?: number }[][] = sundays.map((sunday) =>
+    eachDayOfInterval({ start: sunday, end: endOfWeek(sunday) }).map((d) => ({ date: d }))
+  );
+
+  if (data.length < 1) return calendarArray;
+
+  const targetMonth = getMonth(date);
+  let index = 0;
+  for (let i = 0; i < calendarArray.length; i += 1) {
+    for (let j = 0; j < calendarArray[i].length; j += 1) {
+      const d = calendarArray[i][j].date;
+      if (getMonth(d) === targetMonth) {
+        if (data[index]) {
+          calendarArray[i][j] = { date: d, count: data[index].count };
+          index += 1;
+        }
+      }
+    }
+  }
+
+  return calendarArray;
 };
 
 interface CalendarProps {
   isWideScreen: boolean;
+  data: DataItem[];
 }
 
-const Calendar: FC<CalendarProps> = ({ isWideScreen }) => {
+const Calendar: FC<CalendarProps> = ({ isWideScreen, data }) => {
   const targetDate = useAppSelector((state) => state.datePicker.startDate);
-  const calendar = getCalendarArray(targetDate);
+  const calendar = getCalendarArray(targetDate, data);
   const displayedMonth = useMemo(() => getMonth(targetDate), [targetDate]);
   const dispatch = useAppDispatch();
-
-  const cos = () => {
-    console.log("min:", minDate);
-    console.log("target:", targetDate);
-    console.log("max:", maxDate);
-  };
 
   const setDisplayedMonth = (action: "BACK" | "NEXT") => {
     switch (action) {
@@ -108,8 +125,6 @@ const Calendar: FC<CalendarProps> = ({ isWideScreen }) => {
       default:
         break;
     }
-
-    cos();
   };
 
   return (
@@ -133,6 +148,15 @@ const Calendar: FC<CalendarProps> = ({ isWideScreen }) => {
           </IconButton>
         </Box>
       </Box>
+      <Box>
+        <Typography
+          align="center"
+          color={defaultTheme.palette.text.secondary}
+          variant={isWideScreen ? "body1" : "body2"}
+        >
+          東京都新型コロナコールセンター相談件数
+        </Typography>
+      </Box>
       <TableContainer>
         <Table
           sx={{
@@ -144,9 +168,17 @@ const Calendar: FC<CalendarProps> = ({ isWideScreen }) => {
           <TableHead>
             <TableRow>
               {jaDayOfWeekList.map((day, index) => (
-                <TableCell align="center" padding="none">
+                <TableCell key={day} align="center" padding="none">
                   <Box css={[styles.cellBase, styles.headBox]}>
-                    <Typography color={index === 0 ? "tomato" : undefined}>{day}</Typography>
+                    <Typography
+                      color={
+                        index === 0
+                          ? defaultTheme.palette.primary.main
+                          : defaultTheme.palette.text.secondary
+                      }
+                    >
+                      {day}
+                    </Typography>
                   </Box>
                 </TableCell>
               ))}
@@ -154,12 +186,15 @@ const Calendar: FC<CalendarProps> = ({ isWideScreen }) => {
           </TableHead>
           <TableBody>
             {calendar.map((weekRow) => (
-              <TableRow key={`${weekRow[0]}`}>
-                {weekRow.map((date) => (
-                  <TableCell padding="none">
+              <TableRow key={weekRow[0].date.toISOString()}>
+                {weekRow.map(({ date, count }) => (
+                  <TableCell key={date.toISOString()} padding="none">
                     <Box css={[styles.cellBase, styles.dateBox]}>
-                      <Typography color={getDateColor(date, displayedMonth)}>
+                      <Typography color={getDateColor(date, displayedMonth)} variant="subtitle2">
                         {getDate(date)}
+                      </Typography>
+                      <Typography align="center" minWidth="3rem">
+                        {count ? `${count}件` : ""}
                       </Typography>
                     </Box>
                   </TableCell>
