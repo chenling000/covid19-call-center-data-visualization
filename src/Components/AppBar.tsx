@@ -157,7 +157,7 @@ const AppBar: FC<AppBarProps> = ({ children, isLoading, isError, error }) => {
         </Toolbar>
       </MUIAppBar>
       <Drawer
-        variant={isDrawerOpen ? "permanent" : "temporary"}
+        variant={isWideScreen ? "permanent" : "temporary"}
         open={isDrawerOpen}
         sx={{
           width: isWideScreen ? styles.drawerWidth.wide : styles.drawerWidth.narrow,
