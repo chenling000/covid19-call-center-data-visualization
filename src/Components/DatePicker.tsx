@@ -54,7 +54,7 @@ const YearPicker = ({ startDate }: { startDate: Date }) => {
   );
 };
 
-export const DatePicker: FC = () => {
+const DatePicker: FC = () => {
   const { isWideScreen } = useMedia();
   const mode = useAppSelector((state) => state.displayMode.mode);
   const { startDate } = useAppSelector((state) => state.datePicker);
