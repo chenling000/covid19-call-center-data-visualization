@@ -79,6 +79,7 @@ const useFetchData = ({ from, till }: FetchDataParameters) => {
   );
 
   useEffect(() => {
+    setIsLoading(true);
     fetchData();
   }, [fetchData]);
 
