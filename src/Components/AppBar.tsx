@@ -77,9 +77,13 @@ const styles = {
     position: absolute;
     z-index: ${theme.zIndex.drawer - 1};
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.2);
+    justify-content: flex-start;
+    background-color: rgba(0, 0, 0, 0.1);
+    > * {
+      padding-top: 7rem;
+    }
   `,
 };
 
@@ -112,7 +116,7 @@ interface AppBarProps {
   children: ReactNode;
 }
 
-const AppBar: FC<AppBarProps> = ({ isLoading, children }) => {
+const AppBar: FC<AppBarProps> = ({ children, isLoading }) => {
   const location = useLocation();
   const { isWideScreen } = useMedia();
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(isWideScreen);
@@ -171,7 +175,9 @@ const AppBar: FC<AppBarProps> = ({ isLoading, children }) => {
       </Drawer>
       {isLoading && (
         <Box css={styles.loadingBox}>
-          <CircularProgress />
+          <Box>
+            <CircularProgress />
+          </Box>
         </Box>
       )}
       <Box component="main" css={styles.mainBox}>
