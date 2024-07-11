@@ -26,11 +26,6 @@ import { Link, useLocation, Location } from "react-router-dom";
 import useMedia from "../Hooks/useMedia";
 import { ROUTE_PATH } from "../RoutePath";
 
-const drawerWidth = {
-  wide: 200,
-  narrow: 70,
-};
-
 const styles = {
   appBox: css`
     display: flex;
@@ -55,6 +50,10 @@ const styles = {
     overflow: auto;
     padding: 0 0.5rem;
   `,
+  drawerWidth: {
+    wide: 200,
+    narrow: 70,
+  },
   drawerListItem: (theme: Theme, path: string, location: Location) => css`
     background-color: ${path === location.pathname ? theme.drawer.activeColor : "Background"};
     border-radius: 0.5rem;
@@ -162,10 +161,10 @@ const AppBar: FC<AppBarProps> = ({ children, isLoading, isError, error }) => {
         variant={isDrawerOpen ? "permanent" : "temporary"}
         open={isDrawerOpen}
         sx={{
-          width: isWideScreen ? drawerWidth.wide : drawerWidth.narrow,
+          width: isWideScreen ? styles.drawerWidth.wide : styles.drawerWidth.narrow,
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: {
-            width: isWideScreen ? drawerWidth.wide : drawerWidth.narrow,
+            width: isWideScreen ? styles.drawerWidth.wide : styles.drawerWidth.narrow,
             boxSizing: "border-box",
           },
         }}
