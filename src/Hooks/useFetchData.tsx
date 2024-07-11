@@ -58,7 +58,8 @@ const useFetchData = ({ from, till }: FetchDataParameters) => {
     async (cursor = "") => {
       try {
         const res = await fetch(
-          `${baseUrl}?from=${from}&till=${till}&limit=1000${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`
+          `${baseUrl}?from=${from}&till=${till}&limit=1000${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`,
+          { cache: "force-cache" }
         );
         const resData: ResponseBody = await res.json();
         rawData.push(...resData[0]);
