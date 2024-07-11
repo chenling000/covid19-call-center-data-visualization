@@ -151,7 +151,7 @@ const AppBar: FC<AppBarProps> = ({ children, isLoading, isError, error }) => {
               <MenuIcon />
             </IconButton>
           )}
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant={isWideScreen ? "h6" : "body1"} noWrap component="div">
             新型コロナコールセンター相談件数
           </Typography>
         </Toolbar>
