@@ -10,7 +10,7 @@ import useFetchData from "../Hooks/useFetchData";
 import useMedia from "../Hooks/useMedia";
 import { defaultTheme } from "../theme/default";
 import pieChartColors from "../theme/pie-chart-color";
-import { getModeData, ModeDataItem, modeDataItemKey } from "../utils/getModeData";
+import { getModeData, ModeDataItem, modeDataItemKey } from "../utils/mode-data";
 
 const styles = {
   graphBox: css`

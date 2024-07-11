@@ -18,7 +18,7 @@ import { useAppSelector } from "../Hooks/reduxHooks";
 import useFetchData from "../Hooks/useFetchData";
 import useMedia from "../Hooks/useMedia";
 import { defaultTheme } from "../theme/default";
-import { getModeData, modeDataItemKey } from "../utils/getModeData";
+import { getModeData, modeDataItemKey } from "../utils/mode-data";
 
 const tickFontSize = {
   big: 15,
