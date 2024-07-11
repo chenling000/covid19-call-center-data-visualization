@@ -1,9 +1,8 @@
-import { Theme } from "@emotion/react";
+import { Theme, css } from "@emotion/react";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import {
   Box,
-  css,
   Table,
   TableBody,
   TableCell,
