@@ -56,14 +56,13 @@ const YearPicker = ({ startDate }: { startDate: Date }) => {
   );
 };
 
-const YearMonthPicker = ({ startDate }: { startDate: Date }) => {
-  const [dateValue, setDateValue] = useState<Date>(startDate);
+export const YearMonthPicker = ({ startDate }: { startDate: Date }) => {
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(setStartDate(new Date(dateValue.getFullYear(), dateValue.getMonth(), 1)));
-    dispatch(setEndDate(new Date(dateValue.getFullYear(), dateValue.getMonth() + 1, 0)));
-  }, [dateValue, dispatch]);
+  const setDateValue = (date: Date) => {
+    dispatch(setStartDate(new Date(date.getFullYear(), date.getMonth(), 1)));
+    dispatch(setEndDate(new Date(date.getFullYear(), date.getMonth() + 1, 0)));
+  };
 
   return (
     <MUIDatePicker
@@ -73,7 +72,7 @@ const YearMonthPicker = ({ startDate }: { startDate: Date }) => {
       views={["year", "month"]}
       format="yyyy/MM"
       css={styles.yearMonthSelect}
-      value={dateValue}
+      value={startDate}
       onAccept={(d) => d && setDateValue(d)}
     />
   );
