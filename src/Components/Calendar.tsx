@@ -58,9 +58,9 @@ const styles = {
   headBox: (theme: Theme) => css`
     background-color: ${theme.palette.grey[200]};
   `,
-  dateBox: (theme: Theme) => css`
+  dateBox: (theme: Theme, isDisplayedMonth: boolean) => css`
     height: 4.5rem;
-    border: 1px solid ${theme.palette.grey[500]};
+    border: 1px solid ${isDisplayedMonth ? theme.palette.grey[500] : theme.palette.grey[200]};
   `,
 };
 
@@ -179,7 +179,12 @@ const Calendar: FC<CalendarProps> = ({ isWideScreen, data }) => {
               <TableRow key={weekRow[0].date.toISOString()}>
                 {weekRow.map(({ date, count }) => (
                   <TableCell key={date.toISOString()} padding="none">
-                    <Box css={[styles.cellBase, styles.dateBox]}>
+                    <Box
+                      css={[
+                        styles.cellBase,
+                        (theme) => styles.dateBox(theme, getMonth(date) === displayedMonth),
+                      ]}
+                    >
                       <Typography color={getDateColor(date, displayedMonth)} variant="subtitle2">
                         {getDate(date)}
                       </Typography>
