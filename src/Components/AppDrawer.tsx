@@ -11,6 +11,7 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
+  Tooltip,
 } from "@mui/material";
 import { FC, ReactElement } from "react";
 import { useLocation, Location, Link } from "react-router-dom";
@@ -103,8 +104,16 @@ const AppDrawer: FC<AppDrawerProps> = ({ isDrawerOpen }) => {
             >
               <ListItemButton>
                 <Link to={path} css={styles.drawerLink}>
-                  <ListItemIcon css={styles.drawerIcon}>{icon}</ListItemIcon>
-                  {isWideScreen && <ListItemText primary={text} />}
+                  {isWideScreen ? (
+                    <>
+                      <ListItemIcon css={styles.drawerIcon}>{icon}</ListItemIcon>
+                      <ListItemText primary={text} />
+                    </>
+                  ) : (
+                    <Tooltip title={text} placement="right-start">
+                      <ListItemIcon css={styles.drawerIcon}>{icon}</ListItemIcon>
+                    </Tooltip>
+                  )}
                 </Link>
               </ListItemButton>
             </ListItem>
